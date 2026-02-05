@@ -72,7 +72,7 @@ pub struct Deposit<'info> {
     pub system_program: Program<'info, System>
 } 
 
-impl <'info> Deposit <'info> {
+impl <'info> Deposit<'info> {
 
     pub fn deposit(&mut self, max_x: u64, max_y: u64, amount: u64) -> Result<()> {
         require!(self.config.locked == false, AmmError::PoolLocked);

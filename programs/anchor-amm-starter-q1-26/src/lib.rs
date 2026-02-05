@@ -18,4 +18,13 @@ pub mod anchor_amm_starter_q1_26 {
     ) -> Result<()> {
         ctx.accounts.init(seed, fee, authority, ctx.bumps)
     }
+
+    pub fn deposit(ctx: Context<Deposit>, 
+        max_x: u64, 
+        max_y: u64, 
+        amount: u64,
+    ) -> Result<()> {
+        ctx.accounts.deposit(max_x, max_y, amount)
+    }
+
 }
