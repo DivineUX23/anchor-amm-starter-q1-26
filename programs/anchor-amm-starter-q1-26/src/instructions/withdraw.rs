@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken, 
-    token::{Burn, Mint, MintTo, Token, TokenAccount, Transfer, burn, mint_to, transfer}};
+    token::{Burn, Mint, Token, TokenAccount, Transfer, burn, transfer}};
 use constant_product_curve::ConstantProduct;
 
 use crate::{state::Config, errors::AmmError};
