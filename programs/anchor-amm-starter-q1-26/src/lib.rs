@@ -35,5 +35,12 @@ pub mod anchor_amm_starter_q1_26 {
         ctx.accounts.withdraw(min_x, min_y, amount)
     }
 
+    pub fn swap(ctx: Context<Swap>,
+        is_x: bool,
+        amount: u64,
+        min: u64,
+    ) -> Result<()> {
+        ctx.accounts.swap(is_x, amount, min)
+    }
 
 }
