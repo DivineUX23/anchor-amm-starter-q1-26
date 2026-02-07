@@ -28,9 +28,6 @@ describe("anchor-amm-starter-q1-26", () => {
   let Bump: number;
 
   const depositAmount = 100;
-  const fee = 10;
-  const maxX = 100;
-  const maxY = 100;
 
   before(async () => {
     
@@ -86,6 +83,7 @@ describe("anchor-amm-starter-q1-26", () => {
 
   it("Is initialized!", async () => {
     const seed1 = new anchor.BN(1111);
+    const fee = 10;
 
     // Init
     await program.methods
@@ -114,10 +112,12 @@ describe("anchor-amm-starter-q1-26", () => {
   });
 
   it("Is deposited!", async () => {
-    const seed1 = new anchor.BN(1111);
+    const reDepositAmount = new anchor.BN(depositAmount);
+    const maxX = new anchor.BN(100);
+    const maxY = new anchor.BN(100);
 
     await program.methods
-      .deposit(new anchor.BN(maxX), new anchor.BN(maxY),  new anchor.BN(depositAmount))
+      .deposit(maxX, maxY, reDepositAmount)
       .accountsStrict({
         user: user.publicKey,
         mintX: mintX,
@@ -148,12 +148,77 @@ describe("anchor-amm-starter-q1-26", () => {
   });
 
 
-
-  it("Is Withdrawn!", async () => {
-    const seed1 = new anchor.BN(1111);
+  
+  it("Is Swapped!", async () => {
+    /*
+    const reDepositAmount = new anchor.BN(depositAmount);
+    const maxX = new anchor.BN(100);
+    const maxY = new anchor.BN(100);
 
     await program.methods
-      .withdraw(new anchor.BN(maxX), new anchor.BN(maxY),  new anchor.BN(depositAmount))
+      .deposit(maxX, maxY, reDepositAmount)
+      .accountsStrict({
+        user: user.publicKey,
+        mintX: mintX,
+        mintY: mintY,
+        mintXAta: mintXAta,
+        mintYAta: mintYAta,
+        mintLp: mintLp,
+        userLp: userLp,
+        vaultX: vaultX,
+        vaultY: vaultY,
+        config: configPda,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([user])
+      .rpc();
+    */
+
+
+    const isX = true;
+    const minExpectedY = new anchor.BN(0);
+    const swapAmount = new anchor.BN(depositAmount);
+    const minY = 50;
+
+    await program.methods
+      .swap(isX, swapAmount, minExpectedY)
+      .accountsStrict({
+        user: user.publicKey,
+        mintX: mintX,
+        mintY: mintY,
+        mintXAta: mintXAta,
+        mintYAta: mintYAta,
+        vaultX: vaultX,
+        vaultY: vaultY,
+        config: configPda,
+        mintLp: mintLp,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([user])
+      .rpc();
+
+    const mintYInfo = await getAccount(provider.connection, mintYAta);
+    expect(Number(mintYInfo.amount)).to.be.greaterThan(minY);
+
+    const mintXInfo = await getAccount(provider.connection, vaultX);
+    expect(Number(mintXInfo.amount)).to.greaterThan(0);
+
+  });
+
+
+
+  it("Is Withdrawn!", async () => {
+
+    const reDepositAmount = new anchor.BN(depositAmount);
+    const maxX = new anchor.BN(50);
+    const maxY = new anchor.BN(50);
+
+    await program.methods
+      .withdraw(maxX, maxY, reDepositAmount)
       .accountsStrict({
         user: user.publicKey,
         mintX: mintX,
@@ -182,5 +247,7 @@ describe("anchor-amm-starter-q1-26", () => {
     expect(Number(userLpInfo.amount)).to.equal(0);
 
   });
+
+
 
 });
