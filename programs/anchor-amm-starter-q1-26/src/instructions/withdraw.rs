@@ -7,8 +7,6 @@ use constant_product_curve::ConstantProduct;
 use crate::{state::Config, errors::AmmError};
 
 #[derive(Accounts)]
-#[instruction(seed: u64)]
-
 pub struct Withdraw <'info> {
     #[account(mut)]
     pub user: Signer<'info>,
@@ -63,7 +61,7 @@ pub struct Withdraw <'info> {
     #[account(
         has_one = mint_x,
         has_one = mint_y,
-        seeds = [b"config", seed.to_le_bytes().as_ref()],
+        seeds = [b"config", &config.seed.to_le_bytes().as_ref()],
         bump = config.config_bump
     )]
     pub config: Account<'info, Config>,
